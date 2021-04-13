@@ -1,63 +1,83 @@
-import React, {useState} from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, Platform } from 'react-native';
-import Task from './components/Task';
+import React, { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+  ScrollView,
+  Platform,
+} from "react-native";
+import Task from "./components/task";
 
 export default function App() {
-  const [task, setTask] = useState('');
+  const [task, setTask] = useState("");
   const [taskItems, setTaskItems] = useState([]);
 
   const handleAddTask = () => {
     Keyboard.dismiss();
-    setTaskItems([...taskItems, task])
-    setTask('');
-  }
+    setTaskItems([...taskItems, task]);
+    setTask("");
+  };
 
   const completeTask = (index) => {
     let itemsCopy = [...taskItems];
     itemsCopy.splice(index, 1);
-    setTaskItems(itemsCopy)
-  }
+    setTaskItems(itemsCopy);
+  };
+
+  const updateTask = (index, text) => {
+    // console.log("index, text: ", index, text);
+    let tempTaskList = [...taskItems];
+    tempTaskList.splice(index, 1, text);
+    setTaskItems(tempTaskList);
+  };
 
   return (
     <View style={styles.container}>
       {/* 페이지보다 길어지면.. 스크롤 생성 */}
       <ScrollView
         contentContainerStyle={{
-          flexGrow: 1
+          flexGrow: 1,
         }}
-        keyboardShouldPersistTaps='handled'
+        keyboardShouldPersistTaps="handled"
       >
-
-      <View style={styles.tasksWrapper}>
-        <Text style={styles.sectionTitle}>Today's tasks</Text>
-        <View style={styles.items}>
-          {
-            taskItems.map((item, index) => {
+        <View style={styles.tasksWrapper}>
+          <Text style={styles.sectionTitle}>Today's tasks</Text>
+          <View style={styles.items}>
+            {taskItems.map((item, index) => {
               return (
-                <TouchableOpacity key={index}  onPress={() => completeTask(index)}>
-                  <Task text={item} /> 
-                </TouchableOpacity>
-              )
-            })
-          }
+                <Task
+                  text={item}
+                  id={index}
+                  completeTask={completeTask}
+                  updateTask={updateTask}
+                />
+              );
+            })}
+          </View>
         </View>
-      </View>
-        
       </ScrollView>
 
       {/* 리스트가 길어저도 키보드가 보이게 된다 */}
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.writeTaskWrapper}
       >
-        <TextInput style={styles.input} placeholder={'오늘할일을 적어주세요'} value={task} onChangeText={text => setTask(text)} />
+        <TextInput
+          style={styles.input}
+          placeholder={"오늘할일을 적어주세요"}
+          value={task}
+          onChangeText={(text) => setTask(text)}
+        />
         <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-      
     </View>
   );
 }
@@ -65,7 +85,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8EAED',
+    backgroundColor: "#E8EAED",
   },
   tasksWrapper: {
     paddingTop: 80,
@@ -73,36 +93,36 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   items: {
     marginTop: 30,
   },
   writeTaskWrapper: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 60,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   input: {
     paddingVertical: 15,
     paddingHorizontal: 15,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 60,
-    borderColor: '#C0C0C0',
+    borderColor: "#C0C0C0",
     borderWidth: 1,
     width: 250,
   },
   addWrapper: {
     width: 60,
     height: 60,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#C0C0C0',
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#C0C0C0",
     borderWidth: 1,
   },
   addText: {},
